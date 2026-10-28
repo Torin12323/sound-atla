@@ -1,7 +1,8 @@
+import {updateTracks,updateArtists} from './catalog-update-20261028';
 import {audioSources} from './audio-sources';
 import {extraTracks} from './catalog-extra';
 export type Source={label:string;url:string;platform:string;role:string};
-export type Track={id:string;title:string;artist:string;artistId:string;kind:'music'|'sfx';category:string;genre:string;moods:string[];scenes:string[];energy:string;duration?:number;description:string;tip:string;color:string;license:string;licenseUrl:string;sources:Source[];youtube?:string;youtubeStart?:number;youtubeEnd?:number;audio?:string;sourceNote?:string;custom?:boolean};
+export type Track={id:string;title:string;artist:string;artistId:string;kind:'music'|'sfx'|'voice';category:string;genre:string;moods:string[];scenes:string[];energy:string;duration?:number;description:string;tip:string;color:string;license:string;licenseUrl:string;sources:Source[];youtube?:string;youtubeStart?:number;youtubeEnd?:number;audio?:string;sourceNote?:string;custom?:boolean;addedOn?:string;language?:string;subgenre?:string};
 export type Artist={id:string;name:string;role:string;bio:string;styles:string[];url:string;color:string;initials:string};
 export const artists:Artist[]=[
 {id:'scott',name:'Scott Buckley',role:'作曲家 · 编曲家',bio:'澳大利亚作曲家与编曲家，将管弦乐与电子音色融入电影感配乐。为动画、游戏及影视创作音乐，并运营自己的 CC BY 音乐库。',styles:['电影感','管弦','氛围'],url:'https://www.scottbuckley.com.au/about/',color:'mint',initials:'SB'},
@@ -12,6 +13,7 @@ export const artists:Artist[]=[
 {id:'cartoon',name:'Cartoon · Jéja',role:'音乐创作者 · NCS 发行',bio:'《On & On》的音乐创作者，Daniel Levi 参与演唱。作品由 NCS 发布，曲目页面保留完整署名与使用说明。',styles:['电子','流行','人声'],url:'https://ncs.io/OnandOn',color:'violet',initials:'CJ'},
 {id:'warriyo',name:'Warriyo',role:'音乐制作人 · NCS 发行',bio:'《Mortals》的音乐创作者，Laura Brehm 参与演唱。可通过 NCS 官方作品页面查看发布、试听与许可信息。',styles:['电子','人声','运动'],url:'https://ncs.io/mortals',color:'orange',initials:'WA'},
 {id:'syn',name:'Syn Cole',role:'音乐制作人 · NCS 发行',bio:'《Feel Good》的音乐创作者。通过 NCS 官方 YouTube 发布试听，作品署名与使用条件参考 NCS 的说明。',styles:['电子','活力','运动'],url:'https://ncs.io/feelgood',color:'lime',initials:'SC'},
+...updateArtists,
 ];
 const yt=(id:string):Source=>({label:'YouTube 试听',url:`https://www.youtube.com/watch?v=${id}`,platform:'YouTube',role:'原站视频'});
 const web=(url:string,label='作者官网'):Source=>({label,url,platform:'国外网站',role:'官方来源'});
@@ -46,6 +48,7 @@ mix('notification','Retro game notification','复古游戏提示','界面与提�
 mix('applause','Stadium crowd light applause','体育场轻掌声','人物与群体',11,'表现运动现场的群体反应。',['运动卡点'],'orange'),
 mix('cartoon-whistle','Cartoon toy whistle','卡通玩具哨声','卡通与喜剧',1,'轻松与反差片段的声音候选。',['日常生活','产品展示'],'lime'),
 ...extraTracks,
+...updateTracks,
 ];
 export const tracks:Track[]=catalogTracks.map(t=>audioSources[t.id]?{...t,audio:audioSources[t.id].url,tip:'在站内试听台反复听落点，用进度条或前后 1 秒微调，再记录与画面匹配的片段。',sources:[{label:'Mixkit 素材来源',url:audioSources[t.id].page,platform:'国外网站',role:'官方音效列表'}]}:t);
 export const scenes=[

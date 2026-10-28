@@ -12,7 +12,7 @@ const playerError=(code:number)=>code===100?'这条视频已被移除或设为�
 const TrackPlayer=forwardRef<TrackPlayerHandle,Props>(function TrackPlayer({track,onPrevious,onNext,onMark,onShare},ref){
  const mount=useRef<HTMLDivElement>(null);const audio=useRef<HTMLAudioElement>(null);const transport=useRef<Transport|null>(null);const loopRef=useRef(false);
  const [ready,setReady]=useState(false);const [playing,setPlaying]=useState(false);const [buffering,setBuffering]=useState(false);const [time,setTime]=useState(0);const [duration,setDuration]=useState(0);const [rates,setRates]=useState<number[]>([1]);const [speed,setSpeed]=useState(1);const [volume,setVolume]=useState(80);const [loop,setLoop]=useState(false);const [error,setError]=useState('');const [hint,setHint]=useState('');const [retry,setRetry]=useState(0);
- const supported=!!(track.youtube||track.audio);const step=track.kind==='sfx'?1:10;
+ const supported=!!(track.youtube||track.audio);const step=track.kind==='music'?10:1;
  const seekTo=(seconds:number)=>{const p=transport.current;if(!p||!ready||error)return;setTime(p.seek(seconds));};
  useImperativeHandle(ref,()=>({seekTo:(seconds,play=false)=>{seekTo(seconds);if(play&&ready&&!error)void Promise.resolve(transport.current?.play()).catch(()=>setHint('请点击播放按钮继续试听。'));},currentTime:()=>transport.current?.time()||0}));
  useEffect(()=>{loopRef.current=loop;},[loop]);
@@ -51,7 +51,7 @@ const TrackPlayer=forwardRef<TrackPlayerHandle,Props>(function TrackPlayer({trac
  return <section className="sound-player" aria-label="站内试听播放器">
   <div className="studio-topline"><span><i/>{track.youtube?'YOUTUBE · 站内播放':'AUDIO · 站内试听'}</span><button className="text-button" onClick={onShare}><Link2 size={13}/>复制播放页链接</button></div>
   {track.youtube?<div className="youtube-stage" ref={mount}/>:<div className={`audio-stage ${track.color}`}><div className="audio-emblem"><Headphones size={42}/><span>✦</span></div><span className="eyebrow">{track.category}</span><strong>{track.title}</strong><p>{supported?'听清每一个声音落点':'这条收录尚未提供可播放地址'}</p>{track.audio&&<audio ref={audio} src={track.audio} preload="metadata" controls aria-label={`${track.title} 音频`}/>}</div>}
-  {!supported&&<p className="playback-message">自定义音效请填写 MP3、WAV、OGG 等音频直链，或 YouTube 视频链接；普通网页链接无法直接播放。</p>}
+  {!supported&&<p className="playback-message">自定义音效和配音请填写 MP3、WAV、OGG 等音频直链，或 YouTube 视频链接；普通网页链接无法直接播放。</p>}
   {error&&<div className="playback-error" role="alert"><span>{error}</span><button className="subtle-button" onClick={()=>setRetry(n=>n+1)}><RefreshCw size={14}/>重试</button></div>}
   <div className="studio-controls">
    <div className="studio-progress"><span>{mediaTime(time)}</span><input type="range" min="0" max={duration||1} step="0.1" value={Math.min(time,duration||1)} onChange={e=>seekTo(Number(e.target.value))} disabled={disabled||!duration} aria-label="播放进度" aria-valuetext={`${mediaTime(time)} / ${mediaTime(duration)}`}/><span>{duration?mediaTime(duration):'--:--'}</span></div>
